@@ -1,0 +1,132 @@
+Not happy with this code. I never really got it out of the test phase.
+
+----------------------------------------------------------------------
+
+Simple api:
+
+    o = {
+        stdin   : "false",
+        tty     : "false",
+        str     : "str",
+        file    : null,
+    },
+
+            var p = app.deps.pipes.exec(o);
+            if(p == null) return;
+
+            p.on('data', function(res) {
+                var lines = res.data.split('\n');
+                console.log("p data:", lines);
+            });
+
+            p.on('exit', function(res) {
+                delete app.conf.p[res.pid];
+
+            });
+
+So, if you pass stdin : "true" in opts, you can issue an p.emit('stdin', 'data') to write to stdin of the pipe.
+
+If you pass tty : 'true', it will open stdout as a tty, so you can run procs such as vim, tcpdump, etc
+
+If you pass file : '/tmp/file/name', it will log all output to that file
+
+str is just a placeholder for testing.
+
+
+How to emit stdin:
+
+p.emit('stdin', 'hello!\n');
+
+			
+
+
+----------------------------------------------------------------------
+
+To build:
+
+sh build.sh clean
+sh build
+
+
+
+
+----------------------------------------------------------------------
+
+Just run the test code:
+
+node test.js
+
+
+Type #help
+
+#help
+
+#stop <pid>
+#start <pid>
+#kill <pid>
+#tty
+
+For example, do #tty then type tcpdump -nni any icmp
+
+
+
+I can't even finish this readme....
+
+
+
+
+
+----------------------------------------------------------------------
+
+example output using test.js:
+
+# node test.js 
+loaded.
+id
+p data: [ 'uid=0(root) gid=0(root) groups=0(root),1012(ossec-log-axs),1015(nodans),1016(log-axs),1019(pot)',
+  '' ]
+w
+p data: [ ' 00:53:11 up 5 days, 13:51,  7 users,  load average: 0.05, 0.03, 0.00',
+  'USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT',
+  'x        pts/11   vpn-laptop:S.0   Sun12    3:13  41.96s 41.87s irssi -c irc.se',
+  'root     pts/16   10.200.1.18:0.0  18:17    6:31m  0.00s  0.00s bash',
+  'x        pts/3    vpn-laptop:S.1   Tue03    3days  0.10s  0.10s /bin/bash',
+  'root     pts/18   vpn-laptop.lab   23:15    0.00s  0.13s  0.03s node test.js',
+  'root     pts/1    vpn-laptop:S.1   00:44   12.00s  0.03s  0.01s vim test.js',
+  'root     pts/0    vpn-laptop:S.0   00:43    1:04   0.05s  0.02s vim build.sh',
+  'root     pts/22   vpn-laptop.lab   23:15    2:59   0.13s  0.04s pager -s',
+  '' ]
+ps
+p data: [ '  PID TTY          TIME CMD',
+  '27954 pts/18   00:00:00 bash',
+  '32314 pts/18   00:00:00 node',
+  '32316 pts/18   00:00:00 grep',
+  '32319 pts/18   00:00:00 ps',
+  '' ]
+ls
+p data: [ 'binding.gyp',
+  'build',
+  'build.sh',
+  'info.txt',
+  'node_modules',
+  'pipeline.js',
+  'pipelinejs.cc',
+  'pipelinejs.h',
+  'pipelinejs_misc.cc',
+  'pipelinejs_misc.h',
+  'test.js',
+  '' ]
+p_stdin data: { type: 'ctrl', data: 'hello!\n', len: 7, pid: 32316 }
+psp_stdin data: { type: 'ctrl', data: 'hello!\n', len: 7, pid: 32316 }
+ 
+exec: argc <= 0
+p_stdin data: { type: 'ctrl', data: 'hello!\n', len: 7, pid: 32316 }
+ps|tac|tr r X
+p data: [ '32330 pts/18   00:00:00 tX',
+  '32329 pts/18   00:00:00 tac',
+  '32328 pts/18   00:00:00 ps',
+  '32316 pts/18   00:00:00 gXep',
+  '32314 pts/18   00:00:00 node',
+  '27954 pts/18   00:00:00 bash',
+  '  PID TTY          TIME CMD',
+

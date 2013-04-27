@@ -1,0 +1,62 @@
+course of action:
+	disable stdin interval for now
+	fix the regular shell thing.. segv'n in garbage collection
+	figure this out..
+	then re-add stdin thing
+
+
+
+github/kexec
+
+lateral:
+ls | grep root | tac | cat
+
+ls: initial dup2(pfds[1], 1)
+	0 = stdin
+	1 = grep stdin
+
+grep:
+	0 = ls stdout
+	1 = tac stdin..
+
+
+linear:
+ls | grep root | tac | cat
+
+ls
+	0 = stdin
+	1 = grep stdin
+
+grep
+	0 = ls stdout
+	1 = tac stdin
+
+tac
+	0 = grep stdout
+	1 = cat stdin
+
+cat
+	0 = tac stdout
+	1 = stdout
+
+
+test shell features:
+>
+>>
+<
+<<
+&
+history
+^Z
+fg
+bg
+jobs
+
+
+
+pfds[0] = read end
+pfds[1] = write end
+
+    var argv1 = [ "tcpdump", "-l", "-nni", "any" ];
+    var argv2 = [ "grep", "-i", "--line-buffered", "icmp" ];
+
